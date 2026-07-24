@@ -13,12 +13,14 @@ import { useAuthStore } from './store/useAuthStore'
 
 function AppLayout() {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-lg flex-col overflow-x-hidden bg-white dark:bg-[#131f24]">
-      <TopBar />
-      <main className="flex-1 overflow-x-hidden">
-        <Outlet />
-      </main>
-      <BottomNav />
+    <div className="fixed inset-0 flex justify-center bg-white dark:bg-[#131f24]">
+      <div className="flex h-full w-full max-w-lg flex-col overflow-hidden">
+        <TopBar />
+        <main className="flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
+          <Outlet />
+        </main>
+        <BottomNav />
+      </div>
     </div>
   )
 }

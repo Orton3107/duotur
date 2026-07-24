@@ -72,7 +72,6 @@ export function ModulePathPage() {
               state={state}
               stars={completedLessons[key]?.stars ?? 0}
               color={mod.color}
-              colorDark={mod.colorDark}
               offsetX={offsetX}
               label={item.type === 'lesson' ? `Урок ${item.lessonIndex + 1}` : `Повторение`}
             />

@@ -70,16 +70,18 @@ export function TypeExerciseView({ exercise, onSubmit }: Props) {
         <p className="mt-3 text-sm font-bold text-duo-red-dark">Правильный ответ: {exercise.answer}</p>
       )}
 
-      <div className="mt-auto pt-6">
-        <button
-          onClick={check}
-          disabled={!value.trim() || checked}
-          className="btn-3d w-full rounded-2xl bg-duo-green py-3.5 text-lg font-extrabold text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
-          style={{ ['--btn-shadow' as any]: '#58a700' }}
-        >
-          Проверить
-        </button>
-      </div>
+      {!checked && (
+        <div className="mt-auto pt-6">
+          <button
+            onClick={check}
+            disabled={!value.trim()}
+            className="btn-3d w-full rounded-2xl bg-duo-green py-3.5 text-lg font-extrabold text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
+            style={{ ['--btn-shadow' as any]: '#58a700' }}
+          >
+            Проверить
+          </button>
+        </div>
+      )}
     </div>
   )
 }

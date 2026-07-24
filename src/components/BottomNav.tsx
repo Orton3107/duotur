@@ -7,7 +7,7 @@ const tabs = [
 
 export function BottomNav() {
   return (
-    <nav className="sticky bottom-0 z-20 flex border-t border-black/5 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-white/10 dark:bg-[#131f24]/95">
+    <nav className="z-20 flex shrink-0 border-t border-black/5 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-white/10 dark:bg-[#131f24]/95">
       {tabs.map((tab) => (
         <NavLink
           key={tab.to}

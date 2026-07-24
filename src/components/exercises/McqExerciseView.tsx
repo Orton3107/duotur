@@ -51,16 +51,18 @@ export function McqExerciseView({ exercise, onSubmit }: Props) {
         })}
       </div>
 
-      <div className="mt-auto pt-6">
-        <button
-          onClick={check}
-          disabled={!selected || checked}
-          className="btn-3d w-full rounded-2xl bg-duo-green py-3.5 text-lg font-extrabold text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
-          style={{ ['--btn-shadow' as any]: '#58a700' }}
-        >
-          Проверить
-        </button>
-      </div>
+      {!checked && (
+        <div className="mt-auto pt-6">
+          <button
+            onClick={check}
+            disabled={!selected}
+            className="btn-3d w-full rounded-2xl bg-duo-green py-3.5 text-lg font-extrabold text-white disabled:bg-gray-200 disabled:text-gray-400 dark:disabled:bg-gray-700"
+            style={{ ['--btn-shadow' as any]: '#58a700' }}
+          >
+            Проверить
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -7,7 +7,7 @@ export function TopBar() {
 
   return (
     <header
-      className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-black/5 bg-white/90 px-4 pb-3 backdrop-blur dark:border-white/10 dark:bg-[#131f24]/90"
+      className="z-20 flex shrink-0 items-center justify-between gap-3 border-b border-black/5 bg-white/90 px-4 pb-3 backdrop-blur dark:border-white/10 dark:bg-[#131f24]/90"
       style={{ paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
     >
       <div className="text-lg font-extrabold text-duo-green">TürkçeYol</div>

@@ -9,7 +9,6 @@ interface PathNodeProps {
   state: NodeState
   stars: number
   color: string
-  colorDark: string
   offsetX: number
   label: string
 }
@@ -19,7 +18,7 @@ const ICONS: Record<NodeKind, Record<NodeState, string>> = {
   review: { locked: '🔒', current: '🔁', completed: '🔁' },
 }
 
-export function LessonNode({ to, kind, state, stars, color, colorDark, offsetX, label }: PathNodeProps) {
+export function LessonNode({ to, kind, state, stars, color, offsetX, label }: PathNodeProps) {
   const navigate = useNavigate()
   const disabled = state === 'locked'
   const size = kind === 'review' ? 56 : 68
@@ -39,12 +38,11 @@ export function LessonNode({ to, kind, state, stars, color, colorDark, offsetX, 
         <button
           disabled={disabled}
           onClick={() => navigate(to)}
-          className="btn-3d flex items-center justify-center rounded-full border-4 border-white text-2xl text-white disabled:cursor-not-allowed dark:border-[#131f24]"
+          className="flex items-center justify-center rounded-full border-4 border-white text-2xl leading-none text-white shadow-lg transition-transform active:scale-95 disabled:cursor-not-allowed dark:border-[#131f24]"
           style={{
             width: size,
             height: size,
             background: disabled ? '#b5b5b5' : color,
-            ['--btn-shadow' as any]: disabled ? '#8f8f8f' : colorDark,
           }}
           aria-label={label}
         >
