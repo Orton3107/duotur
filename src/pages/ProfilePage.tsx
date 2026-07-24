@@ -13,7 +13,7 @@ export function ProfilePage() {
   const logout = useAuthStore((s) => s.logout)
 
   const totalLessons = moduleMetas.reduce((sum, m) => sum + getLessons(m.id).length, 0)
-  const totalDone = Object.keys(completedLessons).length
+  const totalDone = Object.keys(completedLessons).filter((key) => !key.includes(':review:')).length
 
   return (
     <div className="mx-auto max-w-md px-4 py-6">

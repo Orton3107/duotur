@@ -6,7 +6,10 @@ export function TopBar() {
   const hearts = useProgressStore((s) => s.hearts)
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-black/5 bg-white/90 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-[#131f24]/90">
+    <header
+      className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-black/5 bg-white/90 px-4 pb-3 backdrop-blur dark:border-white/10 dark:bg-[#131f24]/90"
+      style={{ paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
+    >
       <div className="text-lg font-extrabold text-duo-green">TürkçeYol</div>
       <div className="flex items-center gap-4 font-bold">
         <span className="flex items-center gap-1 text-duo-red">

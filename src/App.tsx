@@ -2,18 +2,20 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
 import { TopBar } from './components/TopBar'
 import { BottomNav } from './components/BottomNav'
-import { HomePage } from './pages/HomePage'
+import { ModulesMenuPage } from './pages/ModulesMenuPage'
+import { ModulePathPage } from './pages/ModulePathPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { LoginPage } from './pages/LoginPage'
 import { LessonPage } from './pages/LessonPage'
+import { ReviewPage } from './pages/ReviewPage'
 import { useProgressStore } from './store/useProgressStore'
 import { useAuthStore } from './store/useAuthStore'
 
 function AppLayout() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-lg flex-col bg-white dark:bg-[#131f24]">
+    <div className="mx-auto flex min-h-screen w-full max-w-lg flex-col overflow-x-hidden bg-white dark:bg-[#131f24]">
       <TopBar />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         <Outlet />
       </main>
       <BottomNav />
@@ -36,11 +38,13 @@ export default function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<ModulesMenuPage />} />
+          <Route path="/module/:moduleId" element={<ModulePathPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/lesson/:moduleId/:lessonIndex" element={<LessonPage />} />
+        <Route path="/module/:moduleId/lesson/:lessonIndex" element={<LessonPage />} />
+        <Route path="/module/:moduleId/review/:lessonIndex" element={<ReviewPage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -21,6 +21,7 @@ interface ProgressState {
   completedLessons: Record<string, LessonResult>
 
   recordLessonResult: (moduleId: ModuleId, lessonIndex: number, mistakes: number) => LessonResult
+  recordReviewResult: (moduleId: ModuleId, lessonIndex: number, mistakes: number) => LessonResult
   loseHeart: () => void
   regenHeartsIfDue: () => void
   hydrateFromRemote: (data: Partial<Pick<ProgressState, 'xp' | 'streak' | 'lastActiveDate' | 'completedLessons'>>) => void
@@ -49,6 +50,40 @@ function starsFor(mistakes: number): number {
   return 1
 }
 
+function applyResult(
+  get: () => ProgressState,
+  set: (partial: Partial<ProgressState>) => void,
+  key: string,
+  mistakes: number,
+): LessonResult {
+  const stars = starsFor(mistakes)
+  const state = get()
+  const existing = state.completedLessons[key]
+  const isFirstTime = !existing
+  const xpGain = isFirstTime ? 10 + (stars === 3 ? 5 : stars === 2 ? 2 : 0) : 5
+
+  const today = todayLocal()
+  let streak = state.streak
+  if (state.lastActiveDate !== today) {
+    streak = state.lastActiveDate && isYesterday(state.lastActiveDate) ? state.streak + 1 : 1
+  }
+
+  const result: LessonResult = {
+    stars: Math.max(stars, existing?.stars ?? 0),
+    mistakes,
+    completedAt: new Date().toISOString(),
+  }
+
+  set({
+    xp: state.xp + xpGain,
+    streak,
+    lastActiveDate: today,
+    completedLessons: { ...state.completedLessons, [key]: result },
+  })
+
+  return result
+}
+
 export const useProgressStore = create<ProgressState>()(
   persist(
     (set, get) => ({
@@ -61,35 +96,16 @@ export const useProgressStore = create<ProgressState>()(
 
       recordLessonResult: (moduleId, lessonIndex, mistakes) => {
         const key = `${moduleId}:${lessonIndex}`
-        const stars = starsFor(mistakes)
-        const state = get()
-        const existing = state.completedLessons[key]
-        const isFirstTime = !existing
-
-        const xpGain = isFirstTime ? 10 + (stars === 3 ? 5 : stars === 2 ? 2 : 0) : 5
-
-        const today = todayLocal()
-        let streak = state.streak
-        if (state.lastActiveDate !== today) {
-          streak = state.lastActiveDate && isYesterday(state.lastActiveDate) ? state.streak + 1 : 1
-        }
-
-        const result: LessonResult = {
-          stars: Math.max(stars, existing?.stars ?? 0),
-          mistakes,
-          completedAt: new Date().toISOString(),
-        }
-
-        set({
-          xp: state.xp + xpGain,
-          streak,
-          lastActiveDate: today,
-          completedLessons: { ...state.completedLessons, [key]: result },
-        })
-
+        const result = applyResult(get, set, key, mistakes)
         void syncLessonResult(moduleId, lessonIndex, result)
-        void syncProfileStats({ xp: state.xp + xpGain, streak })
+        void syncProfileStats({ xp: get().xp, streak: get().streak })
+        return result
+      },
 
+      recordReviewResult: (moduleId, lessonIndex, mistakes) => {
+        const key = `${moduleId}:review:${lessonIndex}`
+        const result = applyResult(get, set, key, mistakes)
+        void syncProfileStats({ xp: get().xp, streak: get().streak })
         return result
       },
 

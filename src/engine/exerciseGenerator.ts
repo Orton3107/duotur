@@ -1,5 +1,4 @@
 import type { Word } from '../data/types'
-import type { Lesson } from '../data/lessons'
 import type { Exercise, McqExercise, WordBankExercise, TypeExercise } from './types'
 import { pickN, shuffle } from './random'
 
@@ -48,28 +47,28 @@ function buildTypeTr(word: Word): TypeExercise {
 }
 
 /**
- * Builds the exercise sequence for a lesson: every word first appears as an easy
- * recognition MCQ, then again as a harder production exercise, interleaved and shuffled.
+ * Builds the exercise sequence for a set of words, each word repeated across several
+ * "passes" so a beginner sees it more than once: first an easy recognition MCQ, then
+ * (for new-content lessons) the reverse-direction MCQ, then a production exercise
+ * (word-bank or typing). Review sessions use fewer passes since the words aren't new.
  */
-export function generateLessonExercises(lesson: Lesson, wordPool: Word[]): Exercise[] {
-  const easyPass = lesson.words.map((word) => buildMcq(word, wordPool, 'tr-ru'))
+export function generateExercises(words: Word[], wordPool: Word[], passes: 2 | 3 = 3): Exercise[] {
+  const recognitionPass = words.map((word) => buildMcq(word, wordPool, 'tr-ru'))
+  const reversePass = words.map((word) => buildMcq(word, wordPool, 'ru-tr'))
+  const productionPass = words.map((word) => (Math.random() < 0.5 ? buildWordBank(word, wordPool) : buildTypeTr(word)))
 
-  const hardPass = lesson.words.map((word) => {
-    const roll = Math.random()
-    if (roll < 0.34) return buildMcq(word, wordPool, 'ru-tr')
-    if (roll < 0.67) return buildWordBank(word, wordPool)
-    return buildTypeTr(word)
-  })
-
-  return interleave(shuffle(easyPass), shuffle(hardPass))
+  const allPasses: Exercise[][] =
+    passes === 3 ? [recognitionPass, reversePass, productionPass] : [recognitionPass, productionPass]
+  return interleaveMany(allPasses.map(shuffle))
 }
 
-function interleave<T>(a: T[], b: T[]): T[] {
+function interleaveMany<T>(lists: T[][]): T[] {
   const result: T[] = []
-  const max = Math.max(a.length, b.length)
+  const max = Math.max(...lists.map((l) => l.length))
   for (let i = 0; i < max; i++) {
-    if (i < a.length) result.push(a[i])
-    if (i < b.length) result.push(b[i])
+    for (const list of lists) {
+      if (i < list.length) result.push(list[i])
+    }
   }
   return result
 }
